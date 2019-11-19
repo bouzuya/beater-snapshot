@@ -1,0 +1,5 @@
+/*.tgz
+/.nyc_output/
+/.tmp/
+/lib/
+/node_modules/
