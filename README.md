@@ -1,5 +1,7 @@
 # beater-snapshot
 
+**This package is alpha version. You can use [Jest](https://jestjs.io/docs/en/snapshot-testing).**
+
 A snapshot testing library for [beater][bouzuya/beater].
 
 [bouzuya/beater]: https://github.com/bouzuya/beater
@@ -7,7 +9,7 @@ A snapshot testing library for [beater][bouzuya/beater].
 ## Installation
 
 ```
-$ npm install -D beater-snapshot
+$ npm install --save-dev beater-snapshot
 ```
 
 ## Usage
