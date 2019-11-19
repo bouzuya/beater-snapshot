@@ -2,6 +2,8 @@
 
 A snapshot testing library for [beater][bouzuya/beater].
 
+[bouzuya/beater]: https://github.com/bouzuya/beater
+
 ## Installation
 
 ```
