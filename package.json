@@ -1,7 +1,7 @@
 {
   "name": "beater-snapshot",
   "description": "A snapshot testing library for beater.",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "author": "bouzuya <m@bouzuya.net> (https://bouzuya.net/)",
   "babel": {
     "presets": [
