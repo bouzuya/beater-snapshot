@@ -28,37 +28,29 @@ const parseValue =
     value === null ? null : JSON.parse(value);
 
 const load =
-  async (
-    options: SnapshotOptions,
-    key: SnapshotKey
-  ): Promise<SnapshotValue> =>
-    fs.readFileSync(
-      path.join(options.directory, key),
-      { encoding: 'utf8' }
-    );
+  async (p: string): Promise<SnapshotValue> =>
+    fs.readFileSync(p, { encoding: 'utf8' });
 
 const save =
   async (
-    options: SnapshotOptions,
-    key: SnapshotKey,
+    p: string,
     value: SnapshotValue
   ): Promise<void> => {
-    const file = path.join(options.directory, key);
-    const dir = path.dirname(file);
+    const dir = path.dirname(p);
     const stat = fs.statSync(dir);
     if (!stat.isDirectory())
       mkdirpSync(dir, { recursive: true });
-    fs.writeFileSync(file, value, { encoding: 'utf8' });
+    fs.writeFileSync(p, value, { encoding: 'utf8' });
   };
 
 const init = (options: SnapshotOptions): Snapshot => {
   if (!fs.existsSync(options.directory))
     mkdirpSync(options.directory, { recursive: true });
   return async <T>(name: string, o: T): Promise<T> => {
-    const key = formatKey(name);
+    const p = path.join(options.directory, formatKey(name));
     const actual = formatValue(o);
-    if (options.update) await save(options, key, actual);
-    const expected = await load(options, key);
+    if (options.update) await save(p, actual);
+    const expected = await load(p);
     return parseValue(expected);
   };
 };
