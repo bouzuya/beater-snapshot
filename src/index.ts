@@ -57,8 +57,6 @@ const ensureOptions = (options?: Partial<SnapshotOptions>): SnapshotOptions => {
 
 const init = (options?: Partial<SnapshotOptions>): Snapshot => {
   const { directory, load, save, update } = ensureOptions(options);
-  if (!fs.existsSync(directory))
-    mkdirpSync(directory, { recursive: true });
   return async <T>(name: string, o: T): Promise<T> => {
     const p = path.join(directory, formatKey(name));
     const actual = formatValue(o);
