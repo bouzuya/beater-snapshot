@@ -16,41 +16,32 @@ $ npm install --save-dev beater-snapshot
 
 ```javascript
 // test.js
-const assert = require('assert');
-const path = require('path');
 const { init } = require('beater-snapshot');
 
-const snapshot = init({
-  directory: path.resolve('./snapshots'),
-  // update snapshot if update option is true
-  // you can use any variable name
-  update: process.env.UPDATE_SNAPSHOT === 'true'
-});
+const matchSnapshot = init(); // options
+const actual = { your: 'test target' };
+matchSnapshot('snapshot file name', actual);
 
-const main = async () => {
-  const actual = { your: 'test target' };
-  const expected = await snapshot('snapshot file name', actual);
-  assert.deepStrictEqual(actual, expected);
-};
-
-main().then(() => {
-  console.log('OK');
-});
+console.log('OK');
 ```
 
 ```
 $ node test.js                          # Error: no snapshot
 $ UPDATE_SNAPSHOT=true node test.js     # update snapshot
 OK
-$ ls snapshots/
+$ ls __snapshots__/
 snapshot_file_name.json                 # snapshot files
-$ cat snapshots/snapshot_file_name.json
+$ cat __snapshots__/snapshot_file_name.json
 {
   "your": "test target"
 }
 $ node test.js                          # Success
 OK
 ```
+
+## Options
+
+See: [`test/helpers.ts`](test/helpers.ts)
 
 ## Badges
 

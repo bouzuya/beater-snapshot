@@ -1,9 +1,21 @@
+import assert from 'assert';
 import { test as testOriginal } from 'beater';
 import path from 'path';
 import { Snapshot, init } from '../src'; // import ... from 'beater-snapshot';
 
-const assertMatchSnapshot: Snapshot = init({
-  directory: path.resolve('./test/snapshots'),
+const matchSnapshot: Snapshot = init({
+  // you can use any assert function
+  // parse -> compare -> assert
+  assert: (expected: string, actual: string): void =>
+    assert.deepStrictEqual(JSON.parse(expected), JSON.parse(actual)),
+
+  directory: path.resolve('__snapshots__'),
+
+  // test data to snapshot data converter
+  stringify: (o: any): string =>
+    JSON.stringify(o, null, 2),
+
+  // update snapshot if update option is true
   update: process.env.UPDATE_SNAPSHOT === 'true'
 });
 
@@ -13,4 +25,4 @@ const test = (name: string, fn: (name: string) => Promise<void>) => {
   return test1;
 };
 
-export { assertMatchSnapshot, test };
+export { matchSnapshot, test };
