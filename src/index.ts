@@ -43,13 +43,23 @@ const save =
     fs.writeFileSync(p, value, { encoding: 'utf8' });
   };
 
-const init = (options: SnapshotOptions): Snapshot => {
-  if (!fs.existsSync(options.directory))
-    mkdirpSync(options.directory, { recursive: true });
+const ensureOptions = (options?: Partial<SnapshotOptions>): SnapshotOptions => {
+  const directory = options?.directory ?? '__snapshots__';
+  const update = options?.update ?? process.env.UPDATE_SNAPSHOT === 'true';
+  return {
+    directory,
+    update
+  };
+};
+
+const init = (options?: Partial<SnapshotOptions>): Snapshot => {
+  const { directory, update } = ensureOptions(options);
+  if (!fs.existsSync(directory))
+    mkdirpSync(directory, { recursive: true });
   return async <T>(name: string, o: T): Promise<T> => {
-    const p = path.join(options.directory, formatKey(name));
+    const p = path.join(directory, formatKey(name));
     const actual = formatValue(o);
-    if (options.update) await save(p, actual);
+    if (update) await save(p, actual);
     const expected = await load(p);
     return parseValue(expected);
   };
