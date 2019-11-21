@@ -6,6 +6,8 @@ type Snapshot = <T>(name: string, o: T) => Promise<T>;
 
 type SnapshotOptions = {
   directory: string;
+  load: (p: string) => string;
+  save: (p: string, data: string) => void;
   update: boolean;
 };
 
@@ -27,15 +29,12 @@ const parseValue =
   (value: SnapshotValue | null) =>
     value === null ? null : JSON.parse(value);
 
-const load =
-  async (p: string): Promise<SnapshotValue> =>
+const defaultLoad =
+  (p: string): string =>
     fs.readFileSync(p, { encoding: 'utf8' });
 
-const save =
-  async (
-    p: string,
-    value: SnapshotValue
-  ): Promise<void> => {
+const defaultSave =
+  (p: string, value: string): void => {
     const dir = path.dirname(p);
     const stat = fs.statSync(dir);
     if (!stat.isDirectory())
@@ -45,22 +44,26 @@ const save =
 
 const ensureOptions = (options?: Partial<SnapshotOptions>): SnapshotOptions => {
   const directory = options?.directory ?? '__snapshots__';
+  const load = options?.load ?? defaultLoad;
+  const save = options?.save ?? defaultSave;
   const update = options?.update ?? process.env.UPDATE_SNAPSHOT === 'true';
   return {
     directory,
+    load,
+    save,
     update
   };
 };
 
 const init = (options?: Partial<SnapshotOptions>): Snapshot => {
-  const { directory, update } = ensureOptions(options);
+  const { directory, load, save, update } = ensureOptions(options);
   if (!fs.existsSync(directory))
     mkdirpSync(directory, { recursive: true });
   return async <T>(name: string, o: T): Promise<T> => {
     const p = path.join(directory, formatKey(name));
     const actual = formatValue(o);
-    if (update) await save(p, actual);
-    const expected = await load(p);
+    if (update) save(p, actual);
+    const expected = load(p);
     return parseValue(expected);
   };
 };
