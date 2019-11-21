@@ -18,8 +18,10 @@ const formatKey =
     name.replace(/[^-_a-zA-Z0-9\/]/g, '_') + '.json';
 
 const formatValue =
-  (o: any): SnapshotValue | null =>
-    typeof o === 'undefined' ? null : JSON.stringify(o, null, 2);
+  (o: any): SnapshotValue => {
+    if (o === void 0) throw new Error('actual is not supported value');
+    return JSON.stringify(o, null, 2);
+  };
 
 const parseValue =
   (value: SnapshotValue | null) =>
@@ -55,7 +57,6 @@ const init = (options: SnapshotOptions): Snapshot => {
   return async <T>(name: string, o: T): Promise<T> => {
     const key = formatKey(name);
     const actual = formatValue(o);
-    if (actual === null) throw new Error('actual is not supported value');
     if (options.update) await save(options, key, actual);
     const expected = await load(options, key);
     return parseValue(expected);
