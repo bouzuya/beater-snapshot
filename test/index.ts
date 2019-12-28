@@ -1,4 +1,4 @@
-import { Test, run } from 'beater';
+import { Test, run } from './helpers';
 import { tests as jsonTests } from './json';
 
 const tests: Test[] = [

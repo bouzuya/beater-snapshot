@@ -1,5 +1,6 @@
 import assert from 'assert';
-import { test as testOriginal } from 'beater';
+import { Test, run } from 'beater';
+import { name, named as testOriginal } from 'beater-helpers';
 import path from 'path';
 import { Snapshot, init } from '../src'; // import ... from 'beater-snapshot';
 
@@ -20,9 +21,9 @@ const matchSnapshot: Snapshot = init({
 });
 
 // (option) custom beater test function
-const test = (name: string, fn: (name: string) => Promise<void>) => {
-  const test1 = testOriginal(name, () => fn(test1.meta.get('name') ?? ''));
+const test = (testName: string, fn: (name: string) => Promise<void>): Test => {
+  const test1 = testOriginal(testName, () => fn(name(test1) ?? ''));
   return test1;
 };
 
-export { matchSnapshot, test };
+export { Test, matchSnapshot, run, test };
