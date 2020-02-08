@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { mkdirpSync } from "./fs";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Snapshot = (name: string, o: any) => void;
 
 type SnapshotOptions = {
@@ -10,6 +11,7 @@ type SnapshotOptions = {
   directory: string;
   load: (p: string) => string;
   save: (p: string, data: string) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   stringify: (o: any) => string;
   update: boolean;
 };
@@ -19,9 +21,9 @@ type SnapshotKey = string;
 type SnapshotValue = string;
 
 const formatKey = (name: string): SnapshotKey =>
-  name.replace(/[^-_a-zA-Z0-9\/]/g, "_") + ".json";
+  name.replace(/[^-_a-zA-Z0-9/]/g, "_") + ".json";
 
-const defaultAssert = (expected: string, actual: string) =>
+const defaultAssert = (expected: string, actual: string): void =>
   deepStrictEqual(JSON.parse(expected), JSON.parse(actual));
 
 const defaultLoad = (p: string): string =>
@@ -34,6 +36,7 @@ const defaultSave = (p: string, value: string): void => {
   fs.writeFileSync(p, value, { encoding: "utf8" });
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const defaultStringify = (o: any): SnapshotValue => {
   if (o === void 0) throw new Error("actual is not supported value");
   return JSON.stringify(o, null, 2);
@@ -60,6 +63,7 @@ const init = (options?: Partial<SnapshotOptions>): Snapshot => {
   const { assert, directory, load, save, stringify, update } = ensureOptions(
     options
   );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (name: string, o: any): void => {
     const p = path.join(directory, formatKey(name));
     const actual = stringify(o);

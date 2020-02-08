@@ -13,6 +13,7 @@ const matchSnapshot: Snapshot = init({
   directory: path.resolve("__snapshots__"),
 
   // test data to snapshot data converter
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   stringify: (o: any): string => JSON.stringify(o, null, 2),
 
   // update snapshot if update option is true
